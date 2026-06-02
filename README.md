@@ -2,9 +2,7 @@
   <img src="public/logo.svg" alt="simpleFontMaker" width="520">
 </p>
 
-A browser tool for drawing fonts by hand and exporting them as TTF files.
-
-I made this for myself. I wanted to turn my handwriting into a font and every tool i found for that was paid. So i made this.
+I made this for myself. I wanted to turn my handwriting into a font and every tool i found online for that was paid in some capacity. So i made this.
 
 It is not a professional font editor. It does not do kerning, hinting, ligatures or any of that (yet). It takes your drawings and gives you a TTF you can install and use. That is it.
 
