@@ -1,0 +1,48 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px - 2 * var(--spacing-lg));
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.glyphLabel { flex: 1; font-size: 15px; }
+.code { color: var(--color-text-muted); font-size: 13px; }
+
+.modeToggle { display: flex; }
+.modeToggle button { border-radius: 0; }
+.modeToggle button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.modeToggle button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+
+.active {
+  background: var(--color-accent) !important;
+  color: #fff !important;
+  border-color: var(--color-accent) !important;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.canvasWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  min-width: 0;
+  overflow: auto;
+  background: var(--color-surface);
+}

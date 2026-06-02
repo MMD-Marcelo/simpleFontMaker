@@ -1,0 +1,13 @@
+.page { max-width: 640px; }
+.back { margin-bottom: var(--spacing-md); }
+.page h1 { margin-bottom: var(--spacing-lg); }
+.section { margin-bottom: var(--spacing-xl); }
+.section h2 { margin-bottom: var(--spacing-md); }
+.section label { margin-bottom: var(--spacing-sm); }
+.radio { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
+.radioLabel { display: flex; align-items: center; gap: var(--spacing-xs); font-size: 14px; color: var(--color-text); }
+.radioLabel input { width: auto; }
+.checkboxGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: var(--spacing-xs); max-height: 320px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--radius); padding: var(--spacing-sm); }
+.checkboxLabel { display: flex; align-items: center; gap: 4px; font-size: 13px; }
+.checkboxLabel input { width: auto; }
+.checkboxLabel span { font-size: 16px; }

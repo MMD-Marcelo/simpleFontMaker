@@ -1,0 +1,21 @@
+.panel {
+  max-width: 480px;
+}
+
+.panel h2 {
+  margin-bottom: var(--spacing-md);
+}
+
+.desc {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.6;
+}
+
+.desc code {
+  font-family: monospace;
+  background: var(--color-surface);
+  padding: 1px 4px;
+  border-radius: 2px;
+}

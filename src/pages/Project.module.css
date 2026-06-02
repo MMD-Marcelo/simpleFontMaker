@@ -1,0 +1,8 @@
+.page h1 { margin-bottom: var(--spacing-xs); }
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-md); }
+.actions { display: flex; gap: var(--spacing-sm); flex-wrap: wrap; align-items: center; }
+.templateGroup { display: flex; gap: 2px; }
+.templateGroup button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.templateGroup button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.templateGroup button:not(:first-child):not(:last-child) { border-radius: 0; }
+.count { font-size: 13px; color: var(--color-text-muted); margin-bottom: var(--spacing-md); }
