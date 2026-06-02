@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      var base = '/simpleFontMaker';
+      var path = location.pathname.replace(base, '') || '/';
+      sessionStorage.setItem('redirect', path + location.search + location.hash);
+      location.replace(base + '/');
+    </script>
+  </head>
+  <body></body>
+</html>
