@@ -19,3 +19,11 @@
   touch-action: none;
   background: transparent;
 }
+
+@media (max-width: 720px) {
+  .wrapper {
+    width: min(100%, 390px);
+    height: auto;
+    max-height: none;
+  }
+}

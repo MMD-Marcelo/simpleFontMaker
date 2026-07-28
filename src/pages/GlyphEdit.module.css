@@ -46,3 +46,35 @@
   overflow: auto;
   background: var(--color-surface);
 }
+
+@media (max-width: 720px) {
+  .page {
+    height: auto;
+    min-height: calc(100vh - 54px - 2 * var(--spacing-md));
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+
+  .glyphLabel {
+    flex: 1 1 100%;
+  }
+
+  .workspace {
+    flex-direction: column;
+    overflow: visible;
+    min-height: 0;
+  }
+
+  .canvasWrapper {
+    flex: none;
+    width: 100%;
+    min-height: 0;
+    height: min(78vh, 560px);
+    padding: var(--spacing-sm);
+    overflow: auto;
+  }
+}

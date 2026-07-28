@@ -84,3 +84,28 @@
   border-color: var(--color-accent);
   color: var(--color-accent);
 }
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+    gap: 10px;
+  }
+
+  .placeholder {
+    font-size: 30px;
+  }
+
+  .actions {
+    display: flex;
+  }
+
+  .actionBtn {
+    min-height: 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

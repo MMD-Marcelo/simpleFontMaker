@@ -19,13 +19,17 @@ const RasterCanvas = forwardRef(function RasterCanvas({ initialData, char, unico
   const lassoBase = useRef(null)
   const { activeTool, brushSize, brushShape, smoothing, zoom } = useEditorStore()
 
-  function dpr() { return window.devicePixelRatio || 1 }
+  function dpr() {
+    const deviceDpr = window.devicePixelRatio || 1
+    const isMobile = window.matchMedia?.('(max-width: 720px)').matches
+    return isMobile ? 1 : deviceDpr
+  }
 
   function setupCanvas(canvas) {
     const d = dpr()
     canvas.width = GLYPH_W * d
     canvas.height = GLYPH_H * d
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
     ctx.scale(d, d)
     return ctx
   }
@@ -63,8 +67,8 @@ const RasterCanvas = forwardRef(function RasterCanvas({ initialData, char, unico
   function getPos(e) {
     const canvas = canvasRef.current
     const rect = canvas.getBoundingClientRect()
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY
+    const clientX = e.clientX
+    const clientY = e.clientY
     return {
       x: (clientX - rect.left) * (GLYPH_W / rect.width),
       y: (clientY - rect.top) * (GLYPH_H / rect.height),
@@ -250,7 +254,9 @@ const RasterCanvas = forwardRef(function RasterCanvas({ initialData, char, unico
   // ---------------------------------------------------------------------------
 
   function startDraw(e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
     e.preventDefault()
+    e.currentTarget.setPointerCapture?.(e.pointerId)
     const pos = getPos(e)
     const ctx = canvasRef.current.getContext('2d')
 
@@ -425,13 +431,11 @@ const RasterCanvas = forwardRef(function RasterCanvas({ initialData, char, unico
         ref={canvasRef}
         className={styles.layer}
         style={{ cursor: activeTool === 'eraser' ? 'cell' : 'crosshair' }}
-        onMouseDown={startDraw}
-        onMouseMove={draw}
-        onMouseUp={endDraw}
-        onMouseLeave={endDraw}
-        onTouchStart={startDraw}
-        onTouchMove={draw}
-        onTouchEnd={endDraw}
+        onPointerDown={startDraw}
+        onPointerMove={draw}
+        onPointerUp={endDraw}
+        onPointerCancel={endDraw}
+        onLostPointerCapture={endDraw}
       />
       {guidelines && <GuideLines guidelines={guidelines} />}
     </div>

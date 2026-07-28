@@ -4,10 +4,12 @@ import { useProjectStore } from '../store/projectStore.js'
 import { GLYPH_W, GLYPH_H } from '../lib/templateSheet.js'
 import styles from './TextPreview.module.css'
 
-const LINE_H = 160
-const GLYPH_DW = Math.round(LINE_H * (GLYPH_W / GLYPH_H))
-const PADDING = 24
-const LINE_GAP = 28
+const DESKTOP_LINE_H = 160
+const DESKTOP_PADDING = 24
+const DESKTOP_LINE_GAP = 28
+const MOBILE_LINE_H = 58
+const MOBILE_PADDING = 12
+const MOBILE_LINE_GAP = 12
 // Consistent gap added on the right of every glyph's ink edge.
 const INK_MARGIN_PX = 8
 
@@ -30,26 +32,26 @@ function loadImg(src) {
 // Callers place each glyph so its leftInk aligns with the current cursor position,
 // then advance the cursor by (rightInk - leftInk) + INK_MARGIN_PX.
 // This gives a fixed visual gap between every pair of glyphs regardless of their widths.
-function measureInkBounds(img) {
-  if (!img) return { leftInk: 0, rightInk: GLYPH_DW }
+function measureInkBounds(img, glyphW, lineH) {
+  if (!img) return { leftInk: 0, rightInk: glyphW }
   const tmp = document.createElement('canvas')
-  tmp.width = GLYPH_DW
-  tmp.height = LINE_H
+  tmp.width = glyphW
+  tmp.height = lineH
   const ctx = tmp.getContext('2d', { willReadFrequently: true })
-  ctx.drawImage(img, 0, 0, GLYPH_DW, LINE_H)
-  const { data } = ctx.getImageData(0, 0, GLYPH_DW, LINE_H)
-  let left = GLYPH_DW
+  ctx.drawImage(img, 0, 0, glyphW, lineH)
+  const { data } = ctx.getImageData(0, 0, glyphW, lineH)
+  let left = glyphW
   let right = -1
-  for (let y = 0; y < LINE_H; y++) {
-    for (let x = 0; x < GLYPH_DW; x++) {
-      const i = (y * GLYPH_DW + x) * 4
+  for (let y = 0; y < lineH; y++) {
+    for (let x = 0; x < glyphW; x++) {
+      const i = (y * glyphW + x) * 4
       if (data[i] < 200 || data[i + 1] < 200 || data[i + 2] < 200) {
         if (x < left) left = x
         if (x > right) right = x
       }
     }
   }
-  if (right < 0) return { leftInk: 0, rightInk: GLYPH_DW }
+  if (right < 0) return { leftInk: 0, rightInk: glyphW }
   return { leftInk: left, rightInk: right + 1 }
 }
 
@@ -134,7 +136,13 @@ export default function TextPreview() {
     const wrap = wrapRef.current
     if (!canvas || !wrap) return
 
-    const canvasW = Math.max(wrap.clientWidth - 2, 400)
+    const isMobile = window.matchMedia?.('(max-width: 720px)').matches
+    const lineH = isMobile ? MOBILE_LINE_H : DESKTOP_LINE_H
+    const glyphDW = Math.round(lineH * (GLYPH_W / GLYPH_H))
+    const padding = isMobile ? MOBILE_PADDING : DESKTOP_PADDING
+    const lineGap = isMobile ? MOBILE_LINE_GAP : DESKTOP_LINE_GAP
+    const inkMargin = isMobile ? 4 : INK_MARGIN_PX
+    const canvasW = Math.max(wrap.clientWidth - 2, isMobile ? 280 : 400)
 
     const neededUnicodes = new Set()
     for (const ch of text) {
@@ -153,13 +161,13 @@ export default function TextPreview() {
     // Measure ink bounds for every glyph; this drives proportional spacing.
     const inkBoundsMap = {}
     for (const unicode of neededUnicodes) {
-      inkBoundsMap[unicode] = measureInkBounds(imageMap[unicode])
+      inkBoundsMap[unicode] = measureInkBounds(imageMap[unicode], glyphDW, lineH)
     }
 
     // cursor = position of the next glyph's LEFT INK edge (relative to PADDING).
     // advance per glyph = inkWidth + INK_MARGIN_PX + letterSpacing
     // → gap between any two consecutive glyphs' ink edges is always INK_MARGIN_PX.
-    const availW = canvasW - PADDING * 2
+    const availW = canvasW - padding * 2
 
     const renderLines = []
     for (const inputLine of text.split('\n')) {
@@ -169,23 +177,23 @@ export default function TextPreview() {
       for (const ch of inputLine) {
         const unicode = ch.codePointAt(0).toString(16).padStart(4, '0').toUpperCase()
         const g = project.glyphs[unicode]
-        const bounds = inkBoundsMap[unicode] ?? { leftInk: 0, rightInk: GLYPH_DW }
+        const bounds = inkBoundsMap[unicode] ?? { leftInk: 0, rightInk: glyphDW }
         const inkW = bounds.rightInk - bounds.leftInk
         const glyphExtra = letterSpacing + (g?.spacingOffset ?? 0)
-        const advance = Math.max(inkW + INK_MARGIN_PX + glyphExtra, 4)
+        const advance = Math.max(inkW + inkMargin + glyphExtra, 4)
         if (cursor + advance > availW && row.length > 0) {
           renderLines.push(row)
           row = []
           cursor = 0
         }
-        row.push({ ch, unicode, bounds, glyphExtra, advance })
+        row.push({ ch, unicode, bounds, advance })
         cursor += advance
       }
       if (row.length > 0) renderLines.push(row)
     }
 
-    const totalH = PADDING * 2 + renderLines.reduce((acc, row) => {
-      return acc + (row === null ? Math.round(LINE_H * 0.4) : LINE_H) + LINE_GAP
+    const totalH = padding * 2 + renderLines.reduce((acc, row) => {
+      return acc + (row === null ? Math.round(lineH * 0.4) : lineH) + lineGap
     }, 0)
 
     canvas.width = canvasW
@@ -198,39 +206,39 @@ export default function TextPreview() {
     ctx.imageSmoothingQuality = 'high'
 
     const positions = []
-    let y = PADDING
+    let y = padding
 
     for (const row of renderLines) {
-      if (row === null) { y += Math.round(LINE_H * 0.4) + LINE_GAP; continue }
+      if (row === null) { y += Math.round(lineH * 0.4) + lineGap; continue }
 
       // cursor is the absolute x of the current glyph's LEFT INK edge.
-      let cursor = PADDING
-      for (const { ch, unicode, bounds, glyphExtra, advance } of row) {
+      let cursor = padding
+      for (const { ch, unicode, bounds, advance } of row) {
         // Shift image left so its leftmost ink aligns with cursor.
         const drawX = cursor - bounds.leftInk
         // Click / overlay slot spans the ink + margin.
-        positions.push({ unicode, x: cursor, y, w: advance, h: LINE_H })
+        positions.push({ unicode, x: cursor, y, w: advance, h: lineH })
         const img = imageMap[unicode]
         if (img) {
           ctx.globalCompositeOperation = 'multiply'
-          ctx.drawImage(img, drawX, y, GLYPH_DW, LINE_H)
+          ctx.drawImage(img, drawX, y, glyphDW, lineH)
           ctx.globalCompositeOperation = 'source-over'
         } else {
           ctx.fillStyle = '#cccccc'
-          ctx.font = `${Math.round(LINE_H * 0.65)}px serif`
+          ctx.font = `${Math.round(lineH * 0.65)}px serif`
           ctx.textAlign = 'left'
           ctx.textBaseline = 'top'
-          ctx.fillText(ch, cursor + 2, y + Math.round(LINE_H * 0.08))
+          ctx.fillText(ch, cursor + 2, y + Math.round(lineH * 0.08))
         }
         cursor += advance
       }
 
-      y += LINE_H + LINE_GAP
+      y += lineH + lineGap
       ctx.strokeStyle = '#f0f0f0'
       ctx.lineWidth = 1
       ctx.beginPath()
-      ctx.moveTo(PADDING, y - LINE_GAP / 2)
-      ctx.lineTo(canvasW - PADDING, y - LINE_GAP / 2)
+      ctx.moveTo(padding, y - lineGap / 2)
+      ctx.lineTo(canvasW - padding, y - lineGap / 2)
       ctx.stroke()
     }
 

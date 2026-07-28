@@ -111,3 +111,66 @@
   display: block;
   width: 100%;
 }
+
+@media (max-width: 720px) {
+  .page {
+    height: auto;
+    min-height: calc(100vh - 54px - 2 * var(--spacing-md));
+  }
+
+  .topbar {
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+
+  .topbar > button {
+    align-self: flex-start;
+  }
+
+  .title {
+    flex: 1 1 100%;
+    order: 2;
+  }
+
+  .spacingControl {
+    width: 100%;
+    margin-left: 0;
+    order: 3;
+  }
+
+  .spacingControl input[type="number"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .charControl {
+    width: 100%;
+    order: 4;
+    flex-wrap: wrap;
+  }
+
+  .charControl label {
+    flex: 1 1 auto;
+  }
+
+  .charControl input[type="number"] {
+    width: 72px;
+  }
+
+  .input {
+    min-height: 92px;
+  }
+
+  .canvasWrap {
+    flex: none;
+    max-height: none;
+    padding: var(--spacing-sm);
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 420px) {
+  .charControl label {
+    flex-basis: 100%;
+  }
+}
