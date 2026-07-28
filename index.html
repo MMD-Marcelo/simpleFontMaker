@@ -16,7 +16,7 @@
         var redirect = sessionStorage.getItem('redirect');
         if (redirect) {
           sessionStorage.removeItem('redirect');
-          history.replaceState(null, '', '/simpleFontMaker' + redirect);
+          history.replaceState(null, '', redirect);
         }
       })();
     </script>

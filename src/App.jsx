@@ -9,7 +9,7 @@ import TextPreview from './pages/TextPreview.jsx'
 
 export default function App() {
   return (
-    <BrowserRouter basename="/simpleFontMaker">
+    <BrowserRouter>
       <AppLayout>
         <Routes>
           <Route path="/" element={<Home />} />

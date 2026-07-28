@@ -8,7 +8,7 @@ It is not a professional font editor. It does not do kerning, hinting, ligatures
 
 ## Running It
 
-https://mmd-marcelo.github.io/simpleFontMaker/
+https://simplefontmaker.tche.studio/
 
 No install, no account. Everything runs in the browser and saves to localStorage. Nothing is sent anywhere.
 
@@ -51,7 +51,7 @@ npm run dev
 npm run build
 ```
 
-Output goes to `dist/`. If you fork it and change the repo name, update the `base` field in `vite.config.js` to match.
+Output goes to `dist/`. The Vite base is relative so it can run from the custom domain without hardcoded GitHub Pages paths.
 
 ## Project Structure
 
